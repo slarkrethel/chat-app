@@ -1,8 +1,9 @@
 import { ChangeEventHandler, HTMLInputTypeAttribute } from "react";
 
 interface InputProp {
-  label: string;
+  label?: string | undefined;
   name?: string | undefined;
+  inputClassName?: string | undefined;
   className?: string | undefined;
   type?: HTMLInputTypeAttribute | undefined;
   placeholder?: string | undefined;
@@ -15,6 +16,7 @@ export default function Input({
   label,
   name,
   className,
+  inputClassName,
   type = "text",
   placeholder,
   isRequired = true,
@@ -22,7 +24,7 @@ export default function Input({
   onChange = () => {},
 }: InputProp) {
   return (
-    <div className="w-1/2">
+    <div className={`w-1/2 ${className}`}>
       <label
         htmlFor={name}
         className="block mb-2 text-sm font-medium text-gray-900"
@@ -36,7 +38,7 @@ export default function Input({
         required={isRequired}
         onChange={onChange}
         placeholder={placeholder}
-        className={`${className} block bg-gray-50 border border-gray-300 text-gray-900 
+        className={`${inputClassName} block bg-gray-50 border border-gray-300 text-gray-900 
         text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5`}
       />
     </div>
