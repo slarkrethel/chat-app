@@ -2,7 +2,7 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import axios from "@/services/axios";
 interface FormProp {
   isSignInPage?: boolean | undefined;
 }
@@ -29,6 +29,23 @@ export default function Form({ isSignInPage = false }: FormProp) {
     return navigate(route);
   };
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const url = isSignInPage ? "login" : "register";
+    const res = await axios.post(`/${url}`, data);
+
+    if (res.status === 400) {
+      alert("Invalid credentials");
+    }
+
+    if (res.data.token) {
+      sessionStorage.setItem("user:token", res.data.token);
+      sessionStorage.setItem("user:detail", JSON.stringify(res.data.user));
+      navigate("/");
+    }
+  };
+
   return (
     <div className="h-screen bg-[#edf3fc] flex justify-center items-center">
       <section
@@ -45,7 +62,7 @@ export default function Form({ isSignInPage = false }: FormProp) {
         </h2>
         <form
           className=" flex flex-col items-center w-full"
-          onSubmit={() => console.log("Submitted")}
+          onSubmit={(e) => handleSubmit(e)}
         >
           {!isSignInPage && (
             <Input

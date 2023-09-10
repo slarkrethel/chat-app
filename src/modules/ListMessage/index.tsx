@@ -1,23 +1,16 @@
 import AccountIcon from "@/assets/account.svg";
+import { IConversation } from "@/compiler/conversations";
+import { ICurrentUser } from "@/compiler/user";
 
-interface DataType {
-  key: React.Key;
-  name: string;
-  status: string;
-  img: string;
+interface ListMessageProp {
+  currentUser: ICurrentUser;
+  dataConversation: IConversation[];
 }
 
-const contact: DataType[] = [];
-for (let i = 0; i < 5; i++) {
-  contact.push({
-    key: i,
-    name: `Edward King ${i}`,
-    status: "Available",
-    img: AccountIcon,
-  });
-}
-
-export default function ListMessage() {
+export default function ListMessage({
+  currentUser,
+  dataConversation,
+}: ListMessageProp) {
   return (
     <section className="w-[25%] border-r border-solid border-black h-screen bg-secondary">
       <div className="flex items-center my-8 mx-14">
@@ -25,7 +18,7 @@ export default function ListMessage() {
           <img src={AccountIcon} alt="account-icon" width={75} height={75} />
         </div>
         <section className="ml-4">
-          <h3 className="text-2xl">Tutorial Dev</h3>
+          <h3 className="text-2xl">{currentUser.fullName}</h3>
           <p className="text-lg font-light">My Account</p>
         </section>
       </div>
@@ -38,25 +31,30 @@ export default function ListMessage() {
             height: "calc(100vh - 250px)",
           }}
         >
-          {contact.map(
-            ({ key, name, status, img }: DataType, index: number) => {
-              const lastItem = index === contact.length - 1;
+          {dataConversation.map(
+            ({ conversationId, user }: IConversation, index: number) => {
+              const lastItem = index === dataConversation.length - 1;
 
               return (
                 <div
-                  key={key}
+                  key={conversationId}
                   className={`flex items-center py-8 cursor-pointer px-14 ${
                     !lastItem ? "border-b border-solid border-b-gray-300" : ""
                   }`}
                 >
                   <div className="flex items-center">
                     <div>
-                      <img src={img} alt={img} width={60} height={60} />
+                      <img
+                        src={AccountIcon}
+                        alt={`img-${conversationId}`}
+                        width={60}
+                        height={60}
+                      />
                     </div>
                     <div className="ml-6">
-                      <h3 className="text-lg font-semibold">{name}</h3>
+                      <h3 className="text-lg font-semibold">{user.fullName}</h3>
                       <p className="text-sm font-light text-gray-600">
-                        {status}
+                        {user.email}
                       </p>
                     </div>
                   </div>
