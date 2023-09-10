@@ -1,15 +1,18 @@
 import Form from "@/modules/Form";
 import Dashboard from "@/modules/Dashboard";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { queryClient } from "@/configs/QueryClientProvider";
 
 type ProtectRouteProps = {
   children: JSX.Element | JSX.Element[];
+  auth?: boolean | undefined;
 };
 
-const ProtectRoute = ({ children }: ProtectRouteProps) => {
+const ProtectRoute = ({ children, auth }: ProtectRouteProps) => {
   const isLoggedIn = sessionStorage.getItem("user:token") !== null;
 
-  if (!isLoggedIn) {
+  if (!isLoggedIn && auth) {
     return <Navigate to="/sign-in" />;
   }
 
@@ -25,32 +28,34 @@ const ProtectRoute = ({ children }: ProtectRouteProps) => {
 
 function App() {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <ProtectRoute>
-            <Dashboard />
-          </ProtectRoute>
-        }
-      />
-      <Route
-        path="/sign-in"
-        element={
-          <ProtectRoute>
-            <Form isSignInPage />
-          </ProtectRoute>
-        }
-      />
-      <Route
-        path="/sign-up"
-        element={
-          <ProtectRoute>
-            <Form />
-          </ProtectRoute>
-        }
-      />
-    </Routes>
+    <QueryClientProvider client={queryClient}>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectRoute auth={true}>
+              <Dashboard />
+            </ProtectRoute>
+          }
+        />
+        <Route
+          path="/sign-in"
+          element={
+            <ProtectRoute>
+              <Form isSignInPage />
+            </ProtectRoute>
+          }
+        />
+        <Route
+          path="/sign-up"
+          element={
+            <ProtectRoute>
+              <Form />
+            </ProtectRoute>
+          }
+        />
+      </Routes>
+    </QueryClientProvider>
   );
 }
 
