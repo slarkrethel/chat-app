@@ -9,7 +9,8 @@ interface InputProp {
   placeholder?: string | undefined;
   isRequired?: boolean | undefined;
   value?: string | ReadonlyArray<string> | number | undefined;
-  onChange?: ChangeEventHandler<Element> | undefined;
+  onChange?: ChangeEventHandler<HTMLInputElement> | undefined;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement> | undefined;
 }
 
 export default function Input({
@@ -22,6 +23,8 @@ export default function Input({
   isRequired = true,
   value,
   onChange = () => {},
+  onKeyDown,
+  ...props
 }: InputProp) {
   return (
     <div className={`w-1/2 ${className}`}>
@@ -32,15 +35,16 @@ export default function Input({
         {label}
       </label>
       <input
-        defaultValue=""
         id={name}
         type={type}
-        value={value}
+        value={value ?? ""}
         required={isRequired}
         onChange={onChange}
         placeholder={placeholder}
         className={`${inputClassName} block bg-gray-50 border border-gray-300 text-gray-900 
         text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5`}
+        onKeyDown={onKeyDown}
+        {...props}
       />
     </div>
   );
