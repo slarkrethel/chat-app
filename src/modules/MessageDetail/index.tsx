@@ -39,18 +39,21 @@ const MessageDetail = forwardRef(
           conversationId: conversationId,
           senderId: currentUser.id,
           message: newMessage?.trim(),
+          receiverId: currentReceiver.receiverId,
         }),
     });
 
     return (
       <section className="w-[50%] h-screen bg-white flex flex-col items-center">
-        <div className="w-[90%] bg-secondary h-[80px] mt-14 rounded-full flex items-center px-14 shadow-md">
+        <div className="w-[90%] bg-secondary h-[80px] mt-14 rounded-full flex items-center pl-2 pr-10 shadow-md">
           <div className="cursor-pointer">
             <img src={AccountIcon} alt="avatar-icon" width={60} height={60} />
           </div>
           <div className="ml-6 mr-auto">
-            <h3 className="text-lg">Alex</h3>
-            <p className="text-sm font-light text-gray-600">online</p>
+            <h3 className="text-lg">{currentReceiver.fullName}</h3>
+            <p className="text-sm font-light text-gray-600">
+              {currentReceiver.email}
+            </p>
           </div>
           <div className="cursor-pointer">
             <img src={CallIcon} alt="call-icon" />
