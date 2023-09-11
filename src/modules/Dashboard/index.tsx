@@ -7,6 +7,7 @@ import axios from "@/services/axios";
 import { ICurrentUser } from "@/compiler/user";
 import { DashboardContext } from "@/context/dashboard";
 import ListMessage from "../ListMessage";
+import People from "../People";
 
 export default function Dashboard() {
   const currentUser = getSessionStorage("user:detail", "") as ICurrentUser;
@@ -31,14 +32,33 @@ export default function Dashboard() {
   );
 
   const { data: dataMessage } = useQuery(
-    ["conversationId", conversationId],
+    [
+      "conversationId",
+      conversationId,
+      currentUser.id,
+      currentReceiver.receiverId,
+    ],
     async () => {
-      const res = await axios.get(`/message/${conversationId}`);
+      const res = await axios.get(
+        `/message/${conversationId}?senderId=${currentUser.id}&receiverId=${currentReceiver.receiverId}`
+      );
 
       return res.data;
     },
     {
       enabled: !!conversationId,
+    }
+  );
+
+  const { data: dataPeople } = useQuery(
+    ["listPeople", currentUser.id],
+    async () => {
+      const res = await axios.get(`/users/${currentUser.id}`);
+
+      return res.data;
+    },
+    {
+      enabled: !!currentUser.id,
     }
   );
 
@@ -57,7 +77,7 @@ export default function Dashboard() {
           dataConversation={dataConversation ?? []}
         />
         <MessageDetail dataMessage={dataMessage} ref={messageRef} />
-        <section className="w-[25%] border-l border-solid border-black h-screen bg-secondary"></section>
+        <People listUser={dataPeople} />
       </DashboardContext.Provider>
     </main>
   );
